@@ -9,7 +9,13 @@ const channelId = process.env.CHANNEL_ID; // Replace with your actual channel ID
 const web = new WebClient(token);
 
 // Usernames to exclude
-const excludedUsernames = ['simplepoll', 'chivp', 'tani', 'reminder'];
+const excludedUsernames = [
+	'simplepoll',
+	'chivp',
+	'tani',
+	'reminder',
+	'hieu.pham',
+];
 
 async function getChannelMembers(channelId) {
 	try {

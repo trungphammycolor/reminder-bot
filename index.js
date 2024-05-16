@@ -21,12 +21,14 @@ if (fs.existsSync(indexFile)) {
 
 // Function to send the cleaning notification
 async function sendCleaningNotification() {
-	console.log();
+	const nextIndex = (currentIndex + 1) % members.length;
 	const { id, name } = members[currentIndex];
+	const { id: idNext, name: nameNext } = members[nextIndex];
+
 	try {
 		const res = await web.chat.postMessage({
 			channel: channelId,
-			text: `<@${id}|${name}>, :bell: keng keng keng đổ rác thôiiiiii.`,
+			text: `<@${id}|${name}>, :bell: keng keng keng đổ rác thôiiiiii. Ngày mai sẽ là lượt của <@${idNext}|${nameNext}> nhé :wink:`,
 		});
 		console.log(
 			'Message sent to channel: ',
@@ -34,19 +36,18 @@ async function sendCleaningNotification() {
 			'with user mention',
 			id,
 			'at',
-			res.ts
+			new Date(res.ts).toLocaleDateString()
 		);
 
 		// Update the index and write it to the file
-		currentIndex = (currentIndex + 1) % members.length;
-		fs.writeFileSync(indexFile, currentIndex.toString());
+		fs.writeFileSync(indexFile, nextIndex.toString());
 	} catch (error) {
 		console.error('Error sending message: ', error);
 	}
 }
 
 // Schedule the task to run every day at 5:00 PM, excluding Saturdays and Sundays
-cron.schedule('0 17 * * 1-5', () => {
+cron.schedule('0 0 17 * * 1-5', () => {
 	console.log('Sending daily cleaning notification');
 	sendCleaningNotification();
 });

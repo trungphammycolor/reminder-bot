@@ -8,19 +8,19 @@ const channelId = process.env.CHANNEL_ID; // Replace with your actual channel ID
 
 const web = new WebClient(token);
 
-// Load member info from the JSON file
-const members = require('./users.json').users;
-
-// Read the index of the last notified user from a file
-let currentIndex = 0;
-const indexFile = 'currentIndex.txt';
-
-if (fs.existsSync(indexFile)) {
-	currentIndex = parseInt(fs.readFileSync(indexFile, 'utf8'), 10);
-}
-
 // Function to send the cleaning notification
 async function sendCleaningNotification() {
+	// Load member info from the JSON file
+	const members = require('./users.json').users;
+
+	// Read the index of the last notified user from a file
+	let currentIndex = 0;
+	const indexFile = 'currentIndex.txt';
+
+	if (fs.existsSync(indexFile)) {
+		currentIndex = parseInt(fs.readFileSync(indexFile, 'utf8'), 10);
+	}
+
 	const nextIndex = (currentIndex + 1) % members.length;
 	const { id, name } = members[currentIndex];
 	const { id: idNext, name: nameNext } = members[nextIndex];
@@ -28,7 +28,7 @@ async function sendCleaningNotification() {
 	try {
 		const res = await web.chat.postMessage({
 			channel: channelId,
-			text: `<@${id}|${name}>, :bell: keng keng keng đổ rác thôiiiiii. Ngày mai sẽ là lượt của <@${idNext}|${nameNext}> nhé :wink:`,
+			text: `<@${id}|${name}>, :bell: keng keng keng đổ rác thôiiiiii. Ngày tiếp theo sẽ là lượt của <@${idNext}|${nameNext}> nhé :wink:`,
 		});
 		console.log(
 			'Message sent to channel: ',
@@ -47,9 +47,16 @@ async function sendCleaningNotification() {
 }
 
 // Schedule the task to run every day at 5:00 PM, excluding Saturdays and Sundays
-cron.schedule('0 0 17 * * 1-5', () => {
-	console.log('Sending daily cleaning notification');
-	sendCleaningNotification();
-});
+cron.schedule(
+	'0 00 17 * * 1-5',
+	() => {
+		console.log('Sending daily cleaning notification');
+		sendCleaningNotification();
+	},
+	{
+		scheduled: true,
+		timezone: 'Asia/Ho_Chi_Minh',
+	}
+);
 
 console.log('Slack bot is running...');

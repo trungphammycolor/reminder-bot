@@ -42,11 +42,9 @@ function celebrate() {
 	});
 }
 
-celebrate();
-
 // Schedule the task to run at 8:30 AM every day
 cron.schedule(
-	'30 8 * * *',
+	'0 30 8 * * *',
 	() => {
 		celebrate();
 	},

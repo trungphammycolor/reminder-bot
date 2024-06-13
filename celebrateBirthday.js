@@ -32,7 +32,7 @@ function celebrate() {
 			try {
 				await web.chat.postMessage({
 					channel: channelId,
-					text: `Chúc mừng sinh nhật <@${user.id}|${user.name}> tròn ${age} tuổi.\nChúc bạn luôn mạnh khỏe yêu đời và hạnh phúc! :birthday:`,
+					text: `Chúc mừng sinh nhật <@${user.id}|${user.name}>.\nChúc bạn luôn mạnh khỏe yêu đời và hạnh phúc! :birthday:`,
 				});
 				console.log(`Birthday message sent to ${user.name}`);
 			} catch (error) {
